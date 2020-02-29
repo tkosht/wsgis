@@ -4,8 +4,6 @@ cd $d/../
 
 nm=$(basename $(pwd))
 
-# touch README.md
-
 git init
 git remote add origin git@github.com:tkosht/$nm.git
 git fetch
