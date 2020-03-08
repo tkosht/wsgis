@@ -3,14 +3,14 @@
 base_dir=../ds3.6
 
 files_list="
+Makefile
+Dockerfile
+docker-compose.yml
+requirements.txt
+bin/g.sh
 .devcontainer
 .env
 "
-# Makefile
-# Dockerfile
-# docker-compose.yml
-# requirements.txt
-# bin/g.sh
 
 for f in $files_list
 do
