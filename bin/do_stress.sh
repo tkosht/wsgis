@@ -7,7 +7,7 @@ stressor(){
     n_reqs=2000
     n_maxconc=50
     n_threads=4
-    docker-compose exec stressor \
+    docker compose exec stressor \
         h2load -p http/1.1 \
             -n $n_reqs -c $n_reqs \
             -m $n_maxconc -t $n_threads \
@@ -20,19 +20,27 @@ gunicorn.flask
 gunicorn.responder
 uwsgi.falcon
 uwsgi.flask
+uvicorn.fastapi
+hypercorn.fastapi
+gunicorn.fastapi
 "
+# daphne.fastapi
 
 rm -rf log
 mkdir -p log/stats
 mkdir -p log/wsgi
-docker-compose up -d stressor
+docker compose up -d stressor
 
 for service in $service_list
 do
-    docker-compose up -d $service
-    stressor $service | tee log/stats/stats.$service.log
-    docker-compose stop $service
+    echo "Processing ... $service"
+    docker compose up -d $service
+    sleep 3
+    stressor $service > log/stats/stats.$service.log
+    docker compose stop $service
+    docker compose rm -f $service
     # break       # for debugging
 done
 
 docker-compose stop stressor
+docker-compose rm -f stressor

@@ -1,3 +1,8 @@
+# Customized
+authorized_keys
+t.sh
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -1,12 +1,11 @@
-FROM python:3.6
-
+FROM python:3.10.6-slim-bullseye
 MAINTAINER tkosht <takehito.oshita.business@gmail.com>
 
 ENV TZ Asia/Tokyo
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y && apt-get upgrade -y \
-    && apt-get install -y sudo build-essential \
-        vim tmux tzdata locales dialog git \
+    && apt-get install -y sudo build-essential curl \
+        vim tmux tzdata locales dialog git openssh-server \
     && localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
 
 ENV LANG="ja_JP.UTF-8" \
@@ -15,11 +14,32 @@ ENV LANG="ja_JP.UTF-8" \
     TZ="Asia/Tokyo" \
     TERM="xterm"
 
+
+RUN mkdir /var/run/sshd
+RUN echo "PubkeyAuthentication yes" >> /etc/ssh/sshd_config
+RUN echo "AuthorizedKeysFile workspace/.ssh/authorized_keys" >> /etc/ssh/sshd_config
+
+# for h2load
+RUN apt-get install -y g++ make binutils autoconf automake autotools-dev libtool pkg-config \
+    zlib1g-dev libcunit1-dev libssl-dev libxml2-dev libev-dev libevent-dev libjansson-dev \
+    libc-ares-dev libjemalloc-dev libsystemd-dev python3-dev
+ # python-setuptools
+
+ARG nghttp2=nghttp2-1.48.0
+RUN python -m pip install cython
+RUN curl -sSLO https://github.com/nghttp2/nghttp2/releases/download/v1.48.0/$nghttp2.tar.bz2 \
+    && tar xf $nghttp2.tar.bz2 \
+    && cd $nghttp2 \
+    && ./configure \
+    && make \
+    && make install
+
 # - upgrade system
 RUN apt-get upgrade -y \
     && apt-get autoremove -y \
-    && apt-get clean -y \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean -y
+
+    # && rm -rf /var/lib/apt/lists/*
 
 COPY ./requirements.txt /requirements.txt
 RUN pip install --upgrade pip \

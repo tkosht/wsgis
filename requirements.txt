@@ -33,8 +33,14 @@ awscli
 # for ds project
 falcon
 flask
+typesystem==0.2.5
 responder
+fastapi
+uvicorn[standard]
 uwsgi
 gunicorn
+hypercorn
+daphne
 paste
 pastedeploy
+
