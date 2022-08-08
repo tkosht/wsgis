@@ -5,8 +5,18 @@ all: default stress
 stress:
 	sh bin/do_stress.sh
 
-stats-log:
+log-stats-summary:
 	@sh bin/log.sh
+
+log-stats-requests:
+	@sh bin/log.sh --requests
+
+log-stats-tat:
+	@sh bin/log.sh --tat
+
+log-stats-throughput:
+	@sh bin/log.sh --throughput
+
 
 bash: up
 	docker-compose exec app bash

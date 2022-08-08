@@ -121,7 +121,7 @@ services:
     command: >
       daphne
         --bind=0.0.0.0
-        ----port=8000
+        --port=8000
         wsgiapp.fastapiasgi:app
 
   hypercorn.fastapi:
@@ -136,6 +136,7 @@ services:
       hypercorn
         --bind=0.0.0.0:8000
         --workers=4
+        --backlog=$somaxconn
         wsgiapp.fastapiasgi:app
 
   gunicorn.fastapi:
