@@ -62,5 +62,5 @@ do
     # break       # for debugging
 done
 
-docker-compose stop stressor
-docker-compose rm -f stressor
+docker compose stop stressor
+docker compose rm -f stressor

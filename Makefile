@@ -19,12 +19,12 @@ log-stats-throughput:
 
 
 bash: up
-	docker-compose exec app bash
+	docker compose exec app bash
 
 up: _up ssh
 
 ssh:
-	docker-compose exec app sudo service ssh start
+	docker compose exec app sudo service ssh start
 
 _up:
 	docker compose up -d app
