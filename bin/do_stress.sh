@@ -32,7 +32,7 @@ hypercorn.fastapi
 
 rm -rf log
 mkdir -p log/stats
-mkdir -p log/wsgi
+mkdir -p log/app
 docker compose up -d stressor
 
 # HTTP/1.1

@@ -27,10 +27,10 @@ services:
     command: >
       gunicorn
         --config=conf/gunicorn.ini.py
-        --chdir=wsgiapp
-        --access-logfile=../log/wsgi/access.grunicorn.falcon.log
-        --error-logfile=../log/wsgi/grunicorn.falcon.log
-        falconwsgi:api
+        --chdir=app
+        --access-logfile=../log/app/access.grunicorn.falcon.log
+        --error-logfile=../log/app/grunicorn.falcon.log
+        falconapp:api
 
   gunicorn.flask:
     image: wsgi
@@ -43,10 +43,10 @@ services:
     command: >
       gunicorn
         --config=conf/gunicorn.ini.py
-        --chdir=wsgiapp
-        --access-logfile=../log/wsgi/access.grunicorn.flask.log
-        --error-logfile=../log/wsgi/grunicorn.flask.log
-        flaskwsgi:api
+        --chdir=app
+        --access-logfile=../log/app/access.grunicorn.flask.log
+        --error-logfile=../log/app/grunicorn.flask.log
+        flaskapp:api
 
   gunicorn.responder:
     image: wsgi
@@ -60,10 +60,10 @@ services:
       gunicorn
         --worker-class=uvicorn.workers.UvicornWorker
         --config=conf/gunicorn.ini.py
-        --chdir=wsgiapp
-        --access-logfile=../log/wsgi/access.grunicorn.responder.log
-        --error-logfile=../log/wsgi/grunicorn.responder.log
-        responderwsgi:api
+        --chdir=app
+        --access-logfile=../log/app/access.grunicorn.responder.log
+        --error-logfile=../log/app/grunicorn.responder.log
+        responderapp:api
 
   uwsgi.falcon:
     image: wsgi
@@ -75,9 +75,9 @@ services:
       - net.ipv4.tcp_syncookies=0
     command: >
       uwsgi
-        --chdir=wsgiapp
-        --wsgi-file=falconwsgi.py
-        --logto=log/wsgi/uwsgi.falcon.log
+        --chdir=app
+        --wsgi-file=falconapp.py
+        --logto=log/app/uwsgi.falcon.log
         conf/uwsgi.ini
 
   uwsgi.flask:
@@ -90,9 +90,24 @@ services:
       - net.ipv4.tcp_syncookies=0
     command: >
       uwsgi
-        --chdir=wsgiapp
-        --wsgi-file=flaskwsgi.py
-        --logto=log/wsgi/uwsgi.flask.log
+        --chdir=app
+        --wsgi-file=flaskapp.py
+        --logto=log/app/uwsgi.flask.log
+        conf/uwsgi.ini
+
+  uwsgi.fastapi:
+    image: wsgi
+    volumes:
+      - .:/home/$user_name/workspace
+    working_dir: /home/$user_name/workspace
+    sysctls:
+      - net.core.somaxconn=$somaxconn
+      - net.ipv4.tcp_syncookies=0
+    command: >
+      uwsgi
+        --chdir=app
+        --wsgi-file=fastapiapp.py
+        --logto=log/app/uwsgi.fastapi.log
         conf/uwsgi.ini
 
   uvicorn.fastapi:
@@ -108,7 +123,7 @@ services:
         --host=0.0.0.0
         --port=8000
         --workers=4
-        wsgiapp.fastapiasgi:app
+        app.fastapiapp:app
 
   daphne.fastapi:
     image: wsgi
@@ -122,7 +137,7 @@ services:
       daphne
         --bind=0.0.0.0
         --port=8000
-        wsgiapp.fastapiasgi:app
+        app.fastapiapp:app
 
   hypercorn.fastapi:
     image: wsgi
@@ -137,7 +152,7 @@ services:
         --bind=0.0.0.0:8000
         --workers=4
         --backlog=$somaxconn
-        wsgiapp.fastapiasgi:app
+        app.fastapiapp:app
 
   gunicorn.fastapi:
     image: wsgi
@@ -151,10 +166,10 @@ services:
       gunicorn
         --worker-class=uvicorn.workers.UvicornWorker
         --config=conf/gunicorn.ini.py
-        --chdir=wsgiapp
-        --access-logfile=../log/wsgi/access.grunicorn.fastapi.log
-        --error-logfile=../log/wsgi/grunicorn.fastapi.log
-        fastapiasgi:app
+        --chdir=app
+        --access-logfile=../log/app/access.grunicorn.fastapi.log
+        --error-logfile=../log/app/grunicorn.fastapi.log
+        fastapiapp:app
 
   stressor:
     build:
