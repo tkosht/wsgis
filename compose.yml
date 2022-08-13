@@ -14,7 +14,7 @@ services:
     working_dir: /home/$user_name/workspace
     ports:
       - "3022:22"   # ssh
-      - "8000:8000"
+      - "3080:8000"
 
   gunicorn.falcon:
     image: wsgi

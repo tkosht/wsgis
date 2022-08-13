@@ -1,6 +1,6 @@
-default: build
+default: all
 
-all: default stress
+all: up stress
 
 stress:
 	sh bin/do_stress.sh
