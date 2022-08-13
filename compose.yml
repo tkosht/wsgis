@@ -65,6 +65,21 @@ services:
         --error-logfile=../log/app/grunicorn.responder.log
         responderapp:api
 
+  uvicorn.responder:
+    image: wsgi
+    volumes:
+      - .:/home/$user_name/workspace
+    working_dir: /home/$user_name/workspace
+    sysctls:
+      - net.core.somaxconn=$somaxconn
+      - net.ipv4.tcp_syncookies=0
+    command: >
+      uvicorn
+        --host=0.0.0.0
+        --port=8000
+        --workers=4
+        app.responderapp:api
+
   uwsgi.falcon:
     image: wsgi
     volumes:
@@ -95,21 +110,6 @@ services:
         --logto=log/app/uwsgi.flask.log
         conf/uwsgi.ini
 
-  uwsgi.fastapi:
-    image: wsgi
-    volumes:
-      - .:/home/$user_name/workspace
-    working_dir: /home/$user_name/workspace
-    sysctls:
-      - net.core.somaxconn=$somaxconn
-      - net.ipv4.tcp_syncookies=0
-    command: >
-      uwsgi
-        --chdir=app
-        --wsgi-file=fastapiapp.py
-        --logto=log/app/uwsgi.fastapi.log
-        conf/uwsgi.ini
-
   uvicorn.fastapi:
     image: wsgi
     volumes:
@@ -123,7 +123,7 @@ services:
         --host=0.0.0.0
         --port=8000
         --workers=4
-        app.fastapiapp:app
+        app.fastapiapp:api
 
   daphne.fastapi:
     image: wsgi
@@ -137,7 +137,7 @@ services:
       daphne
         --bind=0.0.0.0
         --port=8000
-        app.fastapiapp:app
+        app.fastapiapp:api
 
   hypercorn.fastapi:
     image: wsgi
@@ -152,7 +152,7 @@ services:
         --bind=0.0.0.0:8000
         --workers=4
         --backlog=$somaxconn
-        app.fastapiapp:app
+        app.fastapiapp:api
 
   gunicorn.fastapi:
     image: wsgi
@@ -169,7 +169,7 @@ services:
         --chdir=app
         --access-logfile=../log/app/access.grunicorn.fastapi.log
         --error-logfile=../log/app/grunicorn.fastapi.log
-        fastapiapp:app
+        fastapiapp:api
 
   stressor:
     build:

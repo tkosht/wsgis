@@ -6,7 +6,7 @@ stressor(){
     service=$1
     protocol=$2
     n_reqs=4000
-    n_maxconc=50
+    n_maxconc=100
     n_threads=4
     docker compose exec stressor \
         h2load -p $protocol \
@@ -19,6 +19,7 @@ service_list="
 gunicorn.falcon
 gunicorn.flask
 gunicorn.responder
+uvicorn.responder
 uwsgi.falcon
 uwsgi.flask
 uvicorn.fastapi

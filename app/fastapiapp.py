@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 
 
-app = FastAPI()
+api = FastAPI()
 
 
-@app.get('/hello')
+@api.get('/hello')
 async def hello():
     doc = {"message": "hello world!!"}
     return doc

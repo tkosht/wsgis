@@ -11,3 +11,4 @@ class Resource(object):
 
 api = application = falcon.API()
 api.add_route("/hello", Resource())
+
